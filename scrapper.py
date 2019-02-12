@@ -61,11 +61,18 @@ def get_page(page_name):
 
 
 def add_to_db(page_name):
+    print("foo")
     conn = sqlite3.connect('/home/zaibo/code/type/db/typetext.db')
     c = conn.cursor()
-    page_title, page_content = get_page(page_name)
 
-    c.execute("INSERT INTO pages VALUES(null, ?)", (page_title,))
+    c.execute("SELECT * FROM pages where name=(?)", (page_name,))
+    if c.fetchone():
+        print("Already have page: " + page_name)
+        return
+    else:
+        page_title, page_content = get_page(page_name)
+        print("New Page:" + page_name)
+        c.execute("INSERT INTO pages VALUES(null, ?)", (page_title,))
 
     # print(len(page_content))
     # print((len(page_content[0])))
@@ -77,21 +84,10 @@ def add_to_db(page_name):
     conn.close()
 
 
-# topics = ["Physics", "Time", "Philosophy", "Music", "Ancient Rome"]
-# add_to_db("Time")
-# add_to_db("Philosophy")
-# add_to_db("Music")
-# add_to_db("Ancient Rome")
-# add_to_db("Determinism")
-# add_to_db("Emergence")
-# add_to_db("Free_will")
-# add_to_db("Sociology")
-# add_to_db("Psychology")
-# add_to_db("Computer Science")
-# add_to_db("Information theory")
-# add_to_db("Math")
-add_to_db("Time")
-# add_to_db("Rome")
-# add_to_db("Perception")
-# add_to_db("Default Mode Network")
-# add_to_db("Neuroscience")
+topics = ["Physics", "Philosophy",
+          "Music", "Emergence", "Math", "Ancient Rome",
+          "Neuroscience", "Perception", "Psychology", "Default Mode Network"]
+
+
+for topic in topics:
+    add_to_db(topic)
